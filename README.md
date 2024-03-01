@@ -1,6 +1,13 @@
 # Ospanov Shyngys
 ## Data Science, 1-st year bachelor's degree
-Task:Измените формат даты с гггг-мм на гггг-мм-дд
+Task:*Измените формат даты с гггг-мм на гггг-мм-дд*
+
+
+*Импортируем библиоптеку:*
+```
+import csv
+from datetime import datetime
+```
 
 
 *Функция для преобразования месяца из трехбуквенного формата в числовой формат:*
@@ -14,8 +21,8 @@ def month_to_number(month):
 ```
 def format_date(date_str):
     year, month = date_str.split('-')
-    month_number = month_to_number(month)
-    return f"{year}-{month_number:02d}-01"
+    month_number = month_to_number(month)      
+    return f"{year}-{month_number:02d}-01"  
 ```
 
 
@@ -31,30 +38,40 @@ return f"{year}-{month_number:02d}-01"
 ```
 
 
-*Исходные данные:*
+*Открываем файл source_data.csv для чтения и expected_result.csv для записи:*
 ```
-source_data = [
-    {"year": "2022-Feb", "region": "Almaty", "value": 130500},
-    {"year": "2022-Feb", "region": "Astana", "value": 150500},
-    {"year": "2022-Mar", "region": "Almaty", "value": 150500},
-    {"year": "2022-Mar", "region": "Astana", "value": 150500}
-]
+with open('source_data.csv', 'r', newline='') as source_file, open('expected_result.csv', 'w', newline='') as result_file:
 ```
 
 
-*Преобразование формата даты в каждом элементе исходных данных:*
+*Создаем объекты для чтения и записи CSV:*
 ```
-for item in source_data:
-    item["year"] = format_date(item["year"])
-```
-
-
-*Вывод результата:*
-```
-for item in source_data:
-    print(item)
+reader = csv.DictReader(source_file)
+writer = csv.DictWriter(result_file, fieldnames=["year", "region", "value"])
 ```
 
 
-*Результат:*
-[expected_result.csv]
+*Записываем заголовки в файл результатоb:*
+```
+writer.writeheader()
+```
+
+
+*Проходимся по каждой строке в исходном файле:*
+```
+for row in reader:
+        row["year"] = format_date(row["year"])
+        writer.writerow(row)
+```
+
+
+*Преобразуем формат даты в каждой строке:*
+```
+row["year"] = format_date(row["year"])
+```
+
+
+*Записываем строку в файл результатов:*
+```
+writer.writerow(row)
+```

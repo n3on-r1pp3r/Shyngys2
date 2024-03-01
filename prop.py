@@ -1,3 +1,4 @@
+import csv
 from datetime import datetime
 
 def month_to_number(month):
@@ -5,19 +6,17 @@ def month_to_number(month):
 
 def format_date(date_str):
     year, month = date_str.split('-')
-    month_number = month_to_number(month)  
-    return f"{year}-{month_number:02d}-01"  
+    month_number = month_to_number(month)
+    return f"{year}-{month_number:02d}-01"
 
-source_data = [
-    {"year": "2022-Feb", "region": "Almaty", "value": 130500},
-    {"year": "2022-Feb", "region": "Astana", "value": 150500},
-    {"year": "2022-Mar", "region": "Almaty", "value": 150500},
-    {"year": "2022-Mar", "region": "Astana", "value": 150500}
-]
+with open('source_data.csv', 'r', newline='') as source_file, open('expected_result.csv', 'w', newline='') as result_file:
+    reader = csv.DictReader(source_file)
+    writer = csv.DictWriter(result_file, fieldnames=["year", "region", "value"])
+    writer.writeheader()
+    
+    for row in reader:
+        row["year"] = format_date(row["year"])
+        writer.writerow(row)
 
-for item in source_data:
-    item["year"] = format_date(item["year"])
-
-for item in source_data:
-    print(item)
+print("Преобразование завершено.")
 
